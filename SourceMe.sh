@@ -1,6 +1,49 @@
 #!/bin/zsh
 
 # ===========================
+# Usage:
+#   source SourceMe.sh <project_name>
+# ===========================
+
+REPO_URL="https://github.com/Noname-29-lnin/Create_The_Env_Project.git"
+
+PROJECT_NAME=$1
+
+if [ -z "$PROJECT_NAME" ]; then
+    echo "[ERROR] Please provide project name"
+    echo "Usage: source SourceMe.sh <project_name>"
+    return 1 2>/dev/null || exit 1
+fi
+
+# ===========================
+# Clone repo
+# ===========================
+echo "[INFO] Cloning template repo..."
+
+git clone "$REPO_URL" "$PROJECT_NAME"
+
+if [ $? -ne 0 ]; then
+    echo "[ERROR] Clone failed"
+    return 1 2>/dev/null || exit 1
+fi
+
+cd "$PROJECT_NAME" || {
+    echo "[ERROR] Cannot enter project directory"
+    return 1 2>/dev/null || exit 1
+}
+
+# ===========================
+# Remove git history (fresh project)
+# ===========================
+echo "[INFO] Removing .git history..."
+rm -rf .git .gitignore .gitattributes
+rm -rf 00_docs/.gitkeep 
+rm -rf 02_rtl/00_src/.gitkeep
+rm -rf 03_verif/00_tb/.gitkeep
+rm -rf 04_imple/.gitkeep
+rm -rf 07_rdc/.gitkeep
+
+# ===========================
 # Export environment variable
 # ===========================
 export PROJECT_DIR="$(pwd)"
@@ -11,4 +54,15 @@ export PROJECT_HOME="$PROJECT_DIR"
 # ===========================
 # Info
 # ===========================
+echo "[OK] Project initialized successfully"
 echo "[OK] PROJECT_DIR = $PROJECT_DIR"
+echo "[OK] Ready to build system-level environment"
+
+# ===========================
+# Loading again SourceMe.sh to set up environment variables
+# ===========================
+echo "#!/bin/zsh" > SourceMe.sh
+echo "export PROJECT_DIR=\"$PROJECT_DIR\"" >> SourceMe.sh
+echo "export PROJECT_HOME=\"$PROJECT_HOME\"" >> SourceMe.sh
+echo "echo \"[INFO] PROJECT_DIR=$PROJECT_DIR\"" >> SourceMe.sh
+echo "echo \"[INFO] PROJECT_HOME=$PROJECT_HOME\"" >> SourceMe.sh
