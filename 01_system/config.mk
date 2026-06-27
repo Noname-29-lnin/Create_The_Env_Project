@@ -1,7 +1,7 @@
 # ===========================
 # Global Configuration
 # ===========================
-MAIN_TEST       			= VSD_TestMain
+MAIN_TEST       			= main
 SRC_FILE        			= flist.f
 
 BIN_DIR		 				= bin
